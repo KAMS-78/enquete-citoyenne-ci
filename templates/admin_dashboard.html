@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Root Space - Tableau de bord</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+    <header class="admin-header">
+        <div class="brand">
+            <span class="brand-icon">🚀</span>
+            <span class="brand-name">Root Space</span>
+        </div>
+        <a href="{{ url_for('admin_logout') }}" class="logout-btn">Déconnexion</a>
+    </header>
+
+    <div class="admin-container">
+        <h1 class="admin-title">Tableau de bord</h1>
+        <p class="admin-subtitle">Vue d'ensemble des réponses à l'enquête citoyenne</p>
+
+        <form method="GET" class="filters-bar">
+            <div class="filter-group">
+                <label for="commune">Commune</label>
+                <select name="commune" id="commune">
+                    <option value="">Toutes</option>
+                    {% for c in all_communes %}
+                    <option value="{{ c }}" {% if filter_commune == c %}selected{% endif %}>{{ c }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="age">Tranche d'âge</label>
+                <select name="age" id="age">
+                    <option value="">Toutes</option>
+                    {% for a in all_ages %}
+                    <option value="{{ a }}" {% if filter_age == a %}selected{% endif %}>{{ a }} ans</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="education">Niveau d'études</label>
+                <select name="education" id="education">
+                    <option value="">Tous</option>
+                    {% for e in all_educations %}
+                    <option value="{{ e }}" {% if filter_education == e %}selected{% endif %}>{{ e }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn-filter">Filtrer</button>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn-reset">Réinitialiser</a>
+        </form>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-card-icon">🔗</div>
+                <div class="stat-card-label">Pages ouvertes</div>
+                <div class="stat-card-value">{{ total_respondents }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon">👥</div>
+                <div class="stat-card-label">Questionnaires commencés</div>
+                <div class="stat-card-value">{{ total_started }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon">✅</div>
+                <div class="stat-card-label">Questionnaires complétés</div>
+                <div class="stat-card-value">{{ total_completed }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon">📊</div>
+                <div class="stat-card-label">Taux de complétion</div>
+                <div class="stat-card-value">{{ completion_rate }}<span class="stat-card-suffix">%</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon">🔥</div>
+                <div class="stat-card-label">Sévérité moyenne</div>
+                <div class="stat-card-value">{{ avg_severity }}<span class="stat-card-suffix">/5</span></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title"><span class="icon">🎯</span> Top 10 des problèmes signalés</h2>
+            {% if top_problems %}
+            {% for item in top_problems %}
+            <div class="bar-item">
+                <div class="bar-header">
+                    <span class="bar-label">{{ item.label }}</span>
+                    <span class="bar-value">{{ item.count }} ({{ item.percent }}%)</span>
+                </div>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width: {{ item.percent }}%"></div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-state">Aucun problème signalé pour l'instant.</div>
+            {% endif %}
+        </div>
+
+        <div class="section">
+            <h2 class="section-title"><span class="icon">💡</span> Top 10 des solutions actuelles</h2>
+            {% if top_solutions %}
+            {% for item in top_solutions %}
+            <div class="bar-item">
+                <div class="bar-header">
+                    <span class="bar-label">{{ item.label }}</span>
+                    <span class="bar-value">{{ item.count }} ({{ item.percent }}%)</span>
+                </div>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width: {{ item.percent }}%"></div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-state">Aucune solution signalée pour l'instant.</div>
+            {% endif %}
+        </div>
+
+        <div class="two-columns">
+            <div class="section">
+                <h2 class="section-title"><span class="icon">📅</span> Répartition par âge</h2>
+                {% if ages_data %}
+                {% for item in ages_data %}
+                <div class="bar-item">
+                    <div class="bar-header">
+                        <span class="bar-label">{{ item.label }}</span>
+                        <span class="bar-value">{{ item.count }}</span>
+                    </div>
+                    <div class="bar-track">
+                        <div class="bar-fill" style="width: {{ item.percent }}%"></div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="empty-state">Aucune donnée.</div>
+                {% endif %}
+            </div>
+
+            <div class="section">
+                <h2 class="section-title"><span class="icon">🎓</span> Niveau d'études</h2>
+                {% if educations_data %}
+                {% for item in educations_data %}
+                <div class="bar-item">
+                    <div class="bar-header">
+                        <span class="bar-label">{{ item.label }}</span>
+                        <span class="bar-value">{{ item.count }}</span>
+                    </div>
+                    <div class="bar-track">
+                        <div class="bar-fill" style="width: {{ item.percent }}%"></div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <div class="empty-state">Aucune donnée.</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title"><span class="icon">📍</span> Top 10 des communes</h2>
+            {% if communes_data %}
+            {% for item in communes_data %}
+            <div class="bar-item">
+                <div class="bar-header">
+                    <span class="bar-label">{{ item.label }}</span>
+                    <span class="bar-value">{{ item.count }}</span>
+                </div>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width: {{ item.percent }}%"></div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-state">Aucune donnée.</div>
+            {% endif %}
+        </div>
+
+        <div class="section">
+            <h2 class="section-title"><span class="icon">👔</span> Activités des répondants</h2>
+            {% if activities_data %}
+            {% for item in activities_data %}
+            <div class="bar-item">
+                <div class="bar-header">
+                    <span class="bar-label">{{ item.label }}</span>
+                    <span class="bar-value">{{ item.count }}</span>
+                </div>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width: {{ item.percent }}%"></div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-state">Aucune donnée.</div>
+            {% endif %}
+        </div>
+
+        <div class="section">
+            <h2 class="section-title"><span class="icon">⏱️</span> Fréquence des problèmes</h2>
+            {% if frequencies_data %}
+            {% for item in frequencies_data %}
+            <div class="bar-item">
+                <div class="bar-header">
+                    <span class="bar-label">{{ item.label }}</span>
+                    <span class="bar-value">{{ item.count }}</span>
+                </div>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width: {{ item.percent }}%"></div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-state">Aucune donnée.</div>
+            {% endif %}
+        </div>
+
+        <div class="section">
+            <h2 class="section-title"><span class="icon">💬</span> Réponses libres - Problèmes personnalisés</h2>
+            <p class="section-subtitle">Témoignages bruts des répondants.</p>
+            {% if free_problems %}
+            {% for item in free_problems %}
+            <div class="free-response">
+                <div class="free-response-meta">{{ item.commune }} - {{ item.age }}</div>
+                <div class="free-response-text">{{ item.text }}</div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-state">Aucune réponse libre pour l'instant.</div>
+            {% endif %}
+        </div>
+
+        <div class="section">
+            <h2 class="section-title"><span class="icon">💬</span> Réponses libres - Situations décrites</h2>
+            <p class="section-subtitle">Situations récentes racontées par les répondants.</p>
+            {% if free_situations %}
+            {% for item in free_situations %}
+            <div class="free-response">
+                <div class="free-response-meta">{{ item.commune }} - {{ item.age }}</div>
+                <div class="free-response-text">{{ item.text }}</div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-state">Aucune situation décrite pour l'instant.</div>
+            {% endif %}
+        </div>
+
+        <div class="section">
+            <h2 class="section-title"><span class="icon">💬</span> Réponses libres - Solutions personnalisées</h2>
+            <p class="section-subtitle">Solutions personnalisées citées par les répondants.</p>
+            {% if free_solutions %}
+            {% for item in free_solutions %}
+            <div class="free-response">
+                <div class="free-response-meta">{{ item.commune }} - {{ item.age }}</div>
+                <div class="free-response-text">{{ item.text }}</div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-state">Aucune solution personnalisée pour l'instant.</div>
+            {% endif %}
+        </div>
+
+    </div>
+</body>
+</html>

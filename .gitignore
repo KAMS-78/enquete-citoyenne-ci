@@ -1,0 +1,20 @@
+# Environnements virtuels
+venv/
+env/
+
+# Fichiers de base de données
+instance/
+*.db
+*.sqlite
+database.db
+
+# Fichiers Python mis en cache
+__pycache__/
+*.py[cod]
+
+# Fichiers système / OS
+.DS_Store
+Thumbs.db
+
+# Variables d'environnement (si tu en ajoutes plus tard)
+.env

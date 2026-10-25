@@ -1,0 +1,77 @@
+﻿{% extends "base.html" %}
+
+{% block body_class %}home-page{% endblock %}
+
+{% block title %}Accueil — Enquête Citoyenne{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-content">
+        <h1 class="hero-title">
+            Votre quotidien <span class="highlight">mérite mieux.</span>
+        </h1>
+        <p class="hero-subtitle">
+            Racontez-nous vos difficultés en <strong>5 minutes</strong>.<br>
+            Vos réponses aideront à construire des solutions concrètes pour les Ivoiriens.
+        </p>
+
+        <div class="hero-badges">
+            <div class="badge">
+                <span class="badge-icon">🔒</span>
+                <span>100% anonyme</span>
+            </div>
+            <div class="badge">
+                <span class="badge-icon">⏱️</span>
+                <span>5 minutes</span>
+            </div>
+            <div class="badge">
+                <span class="badge-icon">💾</span>
+                <span>Reprise possible</span>
+            </div>
+        </div>
+
+        <a href="{{ url_for('questionnaire') }}" class="btn-primary btn-large">
+            Commencer l'enquête
+            <span class="btn-arrow">→</span>
+        </a>
+
+        <button class="btn-learn-more" onclick="toggleLearnMore()">
+            <span id="learn-more-text">En savoir plus</span>
+            <span id="learn-more-arrow" class="arrow">▼</span>
+        </button>
+
+        <div id="learn-more" class="learn-more">
+            <div class="learn-more-content">
+                <h3>Pourquoi cette enquête ?</h3>
+                <p>
+                    Chaque jour, des milliers d'Ivoiriens font face à des difficultés : transport, santé, 
+                    administration, école, commerce, agriculture… La plupart du temps, ces problèmes 
+                    sont vécus en silence.
+                </p>
+                <p>
+                    Cette enquête a pour but de <strong>recueillir ces difficultés réelles</strong>, de les 
+                    <strong>analyser</strong> et de permettre à des solutions concrètes de voir le jour.
+                </p>
+                <h4>Ce que cela change pour vous :</h4>
+                <ul>
+                    <li>Vous ne perdez plus votre temps à répéter des problèmes que personne n'écoute.</li>
+                    <li>Vous participez à un projet qui pourrait améliorer la vie de millions de personnes.</li>
+                    <li>Vous pouvez reprendre le questionnaire à tout moment.</li>
+                </ul>
+                <p class="privacy-note">
+                    🔒 <strong>Vos réponses sont anonymes.</strong> Aucune donnée personnelle n'est collectée. 
+                    Le lien de reprise vous permet de continuer plus tard si vous le souhaitez.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="hero-visual">
+        <div class="floating-card card-1">📍 Transport</div>
+        <div class="floating-card card-2">🏥 Santé</div>
+        <div class="floating-card card-3">📚 Éducation</div>
+        <div class="floating-card card-4">💰 Commerce</div>
+        <div class="floating-card card-5">🌾 Agriculture</div>
+    </div>
+</section>
+{% endblock %}

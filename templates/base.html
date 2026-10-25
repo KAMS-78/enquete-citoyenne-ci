@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Enquête Citoyenne{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script>
+        // Appliquer le thème AVANT le rendu pour éviter le flash
+        (function() {
+            const saved = localStorage.getItem('theme');
+            const theme = (saved === 'light') ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+</head>
+<body class="{% block body_class %}{% endblock %}">
+    <div class="theme-toggle" onclick="toggleTheme()" title="Changer de thème">
+        <span id="theme-icon">☀️</span>
+    </div>
+
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">Enquête Citoyenne</div>
+            <p class="tagline">Votre voix compte pour la Côte d'Ivoire</p>
+        </div>
+    </header>
+    
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <footer class="site-footer">
+        <div class="container">
+            <p>🔒 Enquête anonyme — Vos réponses restent confidentielles</p>
+        </div>
+    </footer>
+    
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

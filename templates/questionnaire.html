@@ -1,0 +1,348 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Questionnaire — Enquête Citoyenne{% endblock %}
+
+{% block content %}
+<div id="app">
+    <div class="progress-wrapper">
+        <div class="progress-steps">
+            <div class="progress-step active">
+                <div class="progress-step-circle">1</div>
+                <div class="progress-step-label">Profil</div>
+            </div>
+            <div class="progress-step">
+                <div class="progress-step-circle">2</div>
+                <div class="progress-step-label">Difficultés</div>
+            </div>
+            <div class="progress-step">
+                <div class="progress-step-circle">3</div>
+                <div class="progress-step-label">Importance</div>
+            </div>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+        </div>
+        <div class="progress-info">
+            <span id="progressText">0%</span>
+            <span>⏱️ ~5 min</span>
+        </div>
+    </div>
+    
+    <div id="resumeLink" class="resume-link" style="display: none;">
+        <p>💾 <strong>Reprendre plus tard ?</strong> Copiez ce lien pour continuer où vous vous êtes arrêté :</p>
+        <div class="resume-url-container">
+            <input type="text" id="resumeUrl" readonly>
+            <button onclick="copyResumeLink()" class="btn-secondary">Copier</button>
+        </div>
+    </div>
+    
+    <div id="step-profil" class="step active">
+        <h2>Quelques informations sur vous</h2>
+        
+        <div class="question">
+            <label>1. Quel est votre âge ?</label>
+            <select id="age">
+                <option value="">Sélectionnez...</option>
+                {% for age in age_ranges %}
+                <option value="{{ age }}">{{ age }} ans</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="question">
+            <label>2. Dans quelle commune vivez-vous actuellement ?</label>
+            <p class="question-hint">Si vous vivez dans un village ou un campement, sélectionnez la commune ou le chef-lieu de département dont dépend votre localité.</p>
+            <select id="commune">
+                <option value="">Sélectionnez...</option>
+                {% for commune in communes %}
+                <option value="{{ commune }}">{{ commune }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="question">
+            <label>3. Quel est votre niveau d'études ?</label>
+            <select id="education">
+                <option value="">Sélectionnez...</option>
+                {% for level in education_levels %}
+                <option value="{{ level }}">{{ level }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="question">
+            <label>4. Quelles sont vos activités principales ? (plusieurs choix possibles)</label>
+            <div class="checkbox-group">
+                {% for activity in activities %}
+                <label class="checkbox-label">
+                    <input type="checkbox" name="activities" value="{{ activity.id }}">
+                    {{ activity.label }}
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="question">
+            <label>5. Utilisez-vous un smartphone ?</label>
+            <div class="radio-group">
+                <label><input type="radio" name="smartphone" value="oui"> Oui</label>
+                <label><input type="radio" name="smartphone" value="non"> Non</label>
+            </div>
+        </div>
+        
+        <button onclick="saveProfil()" class="btn-primary">Continuer</button>
+    </div>
+    
+    <div id="step-probleme" class="step">
+        <h2>Parlons de vos difficultés quotidiennes</h2>
+        
+        <div class="question">
+            <label>6. Dans votre vie quotidienne, quel(s) problème(s) rencontrez-vous le plus souvent ?</label>
+            <p class="question-hint">Cochez autant de problèmes que vous voulez, et/ou décrivez-en un autre ci-dessous.</p>
+            
+            <div class="problems-grid">
+                <div class="problem-category">
+                    <h4>🚌 Transport et mobilité</h4>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="problems" value="embouteillages">
+                        <span>Les embouteillages me font perdre beaucoup de temps</span>
+                    </label>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="problems" value="cout_transport">
+                        <span>Le coût du transport est trop élevé</span>
+                    </label>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="problems" value="routes_mauvaises">
+                        <span>Les routes sont en mauvais état</span>
+                    </label>
+                </div>
+                
+                <div class="problem-category">
+                    <h4>💰 Argent et emploi</h4>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="problems" value="manque_argent">
+                        <span>Je manque d'argent pour subvenir à mes besoins</span>
+                    </label>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="problems" value="chomage">
+                        <span>Je n'arrive pas à trouver un emploi</span>
+                    </label>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="problems" value="prix_hausse">
+                        <span>Les prix des produits augmentent trop vite</span>
+                    </label>
+                </div>
+                
+                <div class="problem-category">
+                    <h4>🏥 Santé</h4>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="problems" value="sante_couteuse">
+                        <span>L'accès aux soins de santé est difficile ou trop cher</span>
+                    </label>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="problems" value="pas_medecin">
+                        <span>Je n'arrive pas à trouver un médecin quand j'en ai besoin</span>
+                    </label>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="problems" value="medicaments">
+                        <span>Les médicaments sont trop chers ou introuvables</span>
+                    </label>
+                </div>
+                
+                <div class="problem-category">
+                    <h4>🏠 Administration et services publics</h4>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="problems" value="administration">
+                        <span>Les démarches administratives sont longues et compliquées</span>
+                    </label>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="problems" value="coupures_electricite">
+                        <span>Il y a trop de coupures d'électricité</span>
+                    </label>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="problems" value="coupures_eau">
+                        <span>Il y a trop de coupures d'eau</span>
+                    </label>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="problems" value="internet_lent">
+                        <span>La connexion Internet est lente ou instable</span>
+                    </label>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="problems" value="services_publics">
+                        <span>Les services publics sont corrompus ou inefficaces</span>
+                    </label>
+                </div>
+                
+                <div class="problem-category">
+                    <h4>🎓 Éducation et famille</h4>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="problems" value="frais_scolarite">
+                        <span>Les frais de scolarité sont trop élevés</span>
+                    </label>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="problems" value="ecole_loin">
+                        <span>L'école est trop loin ou difficile d'accès</span>
+                    </label>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="problems" value="temps_famille">
+                        <span>Je n'ai pas assez de temps pour ma famille</span>
+                    </label>
+                </div>
+                
+                <div class="problem-category">
+                    <h4>🌾 Commerce et agriculture</h4>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="problems" value="vendre_produits">
+                        <span>Je n'arrive pas à vendre mes produits facilement</span>
+                    </label>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="problems" value="acces_marche">
+                        <span>Je n'ai pas accès à un marché ou à des clients</span>
+                    </label>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="problems" value="prix_instables">
+                        <span>Les prix des matières premières sont instables</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="other-problem">
+                <label for="description">Autre problème ? Décrivez-le ici :</label>
+                <textarea id="description" rows="3" placeholder="Décrivez un problème que vous ne voyez pas dans la liste..."></textarea>
+            </div>
+        </div>
+        
+        <div class="question">
+            <label>7. Pouvez-vous décrire une situation récente où ce problème vous a fait perdre du temps, de l'argent ou de l'énergie ?</label>
+            <textarea id="situation" rows="3" placeholder="Racontez ce qui s'est passé..."></textarea>
+        </div>
+        
+        <div class="question">
+            <label>8. Comment faites-vous actuellement pour gérer ce problème ?</label>
+            <p class="question-hint">Cochez ce qui correspond à votre situation, et/ou décrivez votre propre solution ci-dessous.</p>
+            
+            <div class="problems-grid">
+                <div class="problem-category">
+                    <h4>🙋 Je demande de l'aide autour de moi</h4>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="solutions" value="aide_famille">
+                        <span>Je demande à ma famille ou à mes amis</span>
+                    </label>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="solutions" value="aide_connaissance">
+                        <span>Je fais appel à une connaissance ou à un intermédiaire</span>
+                    </label>
+                </div>
+                
+                <div class="problem-category">
+                    <h4>💸 Je paie pour résoudre le problème</h4>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="solutions" value="payer_aide">
+                        <span>Je paie quelqu'un pour m'aider</span>
+                    </label>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="solutions" value="payer_plus_cher">
+                        <span>Je paie plus cher pour une solution alternative</span>
+                    </label>
+                </div>
+                
+                <div class="problem-category">
+                    <h4>🛠️ Je me débrouille seul</h4>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="solutions" value="debrouille">
+                        <span>Je me débrouille avec les moyens du bord</span>
+                    </label>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="solutions" value="attendre">
+                        <span>J'attends que ça passe</span>
+                    </label>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="solutions" value="alternative">
+                        <span>Je fais autrement, même si c'est moins bien</span>
+                    </label>
+                </div>
+                
+                <div class="problem-category">
+                    <h4>⏳ Je subis la situation</h4>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="solutions" value="subir">
+                        <span>Je ne fais rien, je supporte</span>
+                    </label>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="solutions" value="abandonner">
+                        <span>Je laisse tomber, j'abandonne</span>
+                    </label>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="solutions" value="ne_sais_pas">
+                        <span>Je ne sais pas comment faire</span>
+                    </label>
+                </div>
+                
+                <div class="problem-category">
+                    <h4>🔍 Je cherche activement</h4>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="solutions" value="recherche_internet">
+                        <span>Je cherche des informations sur Internet</span>
+                    </label>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="solutions" value="demander_plusieurs">
+                        <span>Je demande à plusieurs personnes</span>
+                    </label>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="solutions" value="essayer_plusieurs">
+                        <span>J'essaie plusieurs choses sans succès</span>
+                    </label>
+                </div>
+                
+                <div class="problem-category">
+                    <h4>🚫 Je renonce à quelque chose</h4>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="solutions" value="arreter">
+                        <span>J'arrête de faire ce que je voulais faire</span>
+                    </label>
+                    <label class="problem-checkbox">
+                        <input type="checkbox" name="solutions" value="changer_projets">
+                        <span>Je change mes projets à cause de ça</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="other-problem">
+                <label for="current_solution">Autre solution ? Décrivez-la ici :</label>
+                <textarea id="current_solution" rows="3" placeholder="Décrivez comment vous gérez ce problème autrement..."></textarea>
+            </div>
+        </div>
+        
+        <button onclick="saveProbleme()" class="btn-primary">Continuer</button>
+    </div>
+    
+    <div id="step-importance" class="step">
+        <h2>Quelle est l'importance de ce problème pour vous ?</h2>
+        
+        <div class="question">
+            <label>9. À quelle fréquence rencontrez-vous ce problème ?</label>
+            <select id="frequency">
+                <option value="">Sélectionnez...</option>
+                {% for freq in frequencies %}
+                <option value="{{ freq }}">{{ freq }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="question">
+            <label>10. Sur une échelle de 1 à 5, à quel point ce problème vous dérange-t-il ?</label>
+            <div class="severity-scale">
+                <div class="severity-options">
+                    <label><input type="radio" name="severity" value="1"> 1 — Pas du tout</label>
+                    <label><input type="radio" name="severity" value="2"> 2 — Un peu</label>
+                    <label><input type="radio" name="severity" value="3"> 3 — Modérément</label>
+                    <label><input type="radio" name="severity" value="4"> 4 — Beaucoup</label>
+                    <label><input type="radio" name="severity" value="5"> 5 — Énormément</label>
+                </div>
+            </div>
+        </div>
+        
+        <button onclick="saveImportance()" class="btn-primary">Terminer</button>
+    </div>
+</div>
+{% endblock %}

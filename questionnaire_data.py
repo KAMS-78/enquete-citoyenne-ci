@@ -1,0 +1,111 @@
+﻿# -*- coding: utf-8 -*-
+
+ACTIVITIES = [
+    {"id": "etudiant", "label": "Étudiant(e)"},
+    {"id": "salarie", "label": "Salarié(e)"},
+    {"id": "commercant", "label": "Commerçant(e)"},
+    {"id": "agriculteur", "label": "Agriculteur(rice)"},
+    {"id": "entrepreneur", "label": "Entrepreneur(e)"},
+    {"id": "parent", "label": "Parent"},
+    {"id": "sans_emploi", "label": "Sans emploi"},
+    {"id": "autre", "label": "Autre"},
+]
+
+# Liste alphabétique des principales villes et communes de Côte d'Ivoire.
+# Les utilisateurs vivant dans un village ou un campement doivent sélectionner
+# la commune ou le chef-lieu de département dont dépend leur localité.
+COMMUNES = [
+    "Abengourou",
+    "Abobo",
+    "Adiaké",
+    "Adjamé",
+    "Adzopé",
+    "Agboville",
+    "Agnibilékrou",
+    "Akoupé",
+    "Alépé",
+    "Anyama",
+    "Attécoubé",
+    "Bangolo",
+    "Béoumi",
+    "Biankouma",
+    "Bingerville",
+    "Bocanda",
+    "Bondoukou",
+    "Bongouanou",
+    "Bouaflé",
+    "Bouaké",
+    "Bouna",
+    "Boundiali",
+    "Buyo",
+    "Cocody",
+    "Dabakala",
+    "Dabou",
+    "Daloa",
+    "Danané",
+    "Daoukro",
+    "Dimbokro",
+    "Divo",
+    "Duékoué",
+    "Ferkessédougou",
+    "Gagnoa",
+    "Grand-Bassam",
+    "Grand-Lahou",
+    "Guiglo",
+    "Issia",
+    "Jacqueville",
+    "Katiola",
+    "Kong",
+    "Korhogo",
+    "Koumassi",
+    "Kouto",
+    "Lakota",
+    "Man",
+    "Mankono",
+    "Marcory",
+    "M'Bahiakro",
+    "M'Batto",
+    "Niakaramandougou",
+    "Odienné",
+    "Oumé",
+    "Plateau",
+    "Port-Bouët",
+    "Sakassou",
+    "San-Pédro",
+    "Sassandra",
+    "Séguéla",
+    "Sinfra",
+    "Songon",
+    "Soubré",
+    "Tabou",
+    "Tanda",
+    "Tengréla",
+    "Tiassalé",
+    "Tiébissou",
+    "Touba",
+    "Toumodi",
+    "Treichville",
+    "Vavoua",
+    "Yamoussoukro",
+    "Yopougon",
+    "Zuénoula",
+    "Autre commune"
+]
+
+AGE_RANGES = ["15-20", "21-30", "31-40", "41-50", "50+"]
+
+EDUCATION_LEVELS = [
+    "Primaire",
+    "Secondaire",
+    "Supérieur",
+    "Formation professionnelle",
+    "Aucun"
+]
+
+FREQUENCIES = [
+    "Tous les jours",
+    "Plusieurs fois par semaine",
+    "Une fois par semaine",
+    "Une fois par mois",
+    "Rarement"
+]
